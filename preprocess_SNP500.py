@@ -69,10 +69,13 @@ with open('./stock_data/data/relation/adj_mat.pkl', 'rb') as f:
 end_dates = ['2014-12-26', '2015-05-21', '2015-10-13', '2016-03-08', '2016-07-29', '2016-12-20',
              '2017-05-16', '2017-10-05', '2018-04-09', '2018-08-29', '2019-01-24', '2019-05-16']
 
+cp_train_std = np.std(df_close.to_numpy(), axis=0)
+choice = np.argsort(cp_train_std)
+
 for phs in range(0, len(end_dates)):
     print(phs)
-    ntrain = 300
-    nval = 0
+    ntrain = 250
+    nval = 50
     ntest = 100
     win = 5
     nstock = len(all_stock)
@@ -80,8 +83,6 @@ for phs in range(0, len(end_dates)):
     cp = df_close[:end_dates[phs]].tail(ntrain+nval+ntest)
     cp_train = cp.iloc[:ntrain, :]
     cov_train = np.cov(np.exp(cp_train.to_numpy().T))
-    cp_train_std = np.std(cp_train.to_numpy(), axis=0)
-    choice = np.argsort(cp_train_std)
     
     cp_val = cp.iloc[ntrain-win:ntrain+nval, :]
     cp_test = cp.iloc[ntrain+nval-win:, :]
