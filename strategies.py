@@ -104,11 +104,9 @@ def G4P(predY0, std_var_Y0, sample_Y0, cov, gamma, cash=1.0):
         dmax = cvxpy.Parameter()  # placeholder for parameter dmax
         risk = cvxpy.quad_form(x, cov)
         obj = cvxpy.Maximize(cvxpy.sum(x@r) - gamma*risk)  #define objective function
-#         prob = cvxpy.Problem(obj, [cvxpy.sum(x) == 1])
         prob = cvxpy.Problem(obj, [cvxpy.sum(x) == 1, x >= 0])
         r.value = r_hat
         gamma.value = gamma0
-#         print(np.min(cov))
         prob.solve(solver='ECOS')  # solve the problem
         x_opt = x.value  # the optimal variable
         return x_opt
